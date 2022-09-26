@@ -1,0 +1,36 @@
+library(ismev)
+data<-read.csv("E:/debtdata.csv", header=TRUE,stringsAsFactors = FALSE)
+total_debt=data $Total.Debt..KES..Mn.
+gdp=data$Nominal.GDP.prices..Ksh.Million.
+#selecting the threshold u
+
+u=seq(0,max(total_debt))#set of possible thresholds from zero to the maximum
+x=vector("numeric",length(u))#this vector takes the mean excess for each value in u
+#this code computes the mean excess of all values in u and stores them in x
+for(i in 1:length(x))
+{
+threshold.exceedances=total_debt[total_debt>u[i]]
+x[i]=mean(threshold.exceedances-u[i])
+}
+
+plot(x~u,type="l", main="MRL plot",ylab="mean excess")#the MRL plot 
+mrl.plot(total_debt)# with a 95% confidence interval
+
+#threshold excedness data
+above.threshold=total_debt[total_debt>1e+06]
+threshold.exceedances=above.threshold-1e+06
+threshold.exceedances
+
+##fitting the GDP
+
+gpd.fit(total_debt,1e+06)
+
+#checking for the adequecy of the model
+k<-gpd.fit(total_debt,1e+06)
+gpd.diag(k)
+
+zhat_10<-1e+06+(2.2407e+06/-5.027302e-01)*((10*12*0.4932735)^(-5.027302e-01)-1)# 10 year return level
+zhat_10
+
+
+
